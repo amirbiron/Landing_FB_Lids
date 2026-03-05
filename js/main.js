@@ -24,14 +24,16 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     submitButton.disabled = true;
     submitButton.textContent = 'שולח...';
     
-    // Get form data
-    const formData = new FormData(this);
+    // Get form data as JSON for FormSubmit AJAX endpoint
+    const formDataObj = {};
+    new FormData(this).forEach((value, key) => { formDataObj[key] = value; });
 
     try {
         const response = await fetch(this.action, {
             method: 'POST',
-            body: formData,
+            body: JSON.stringify(formDataObj),
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json'
             }
         });
