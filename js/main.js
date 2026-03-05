@@ -25,34 +25,34 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
     submitButton.textContent = 'שולח...';
     
     // Get form data
-    const formData = {
-        name: document.getElementById('name').value,
-        phone: document.getElementById('phone').value,
-        email: document.getElementById('email').value,
-        business: document.getElementById('business').value,
-        groups: document.getElementById('groups').value,
-        timestamp: new Date().toISOString()
-    };
-    
+    const formData = new FormData(this);
+
     try {
-        // Here you would normally send the data to your backend
-        // For now, we'll simulate a successful submission
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
+        const response = await fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
         // Show success message
         formMessage.className = 'form-message success';
         formMessage.textContent = '✓ תודה! נחזור אליך בהקדם להתחלת הבוט';
-        
+        formMessage.style.display = 'block';
+
         // Reset form
         this.reset();
-        
-        // Log to console (in production, this would be sent to your server)
-        console.log('Lead submitted:', formData);
-        
+
     } catch (error) {
         // Show error message
         formMessage.className = 'form-message error';
         formMessage.textContent = '✗ אופס! משהו השתבש. אנא נסה שוב מאוחר יותר.';
+        formMessage.style.display = 'block';
         console.error('Form submission error:', error);
     } finally {
         // Re-enable button
